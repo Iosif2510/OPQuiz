@@ -14,6 +14,8 @@ public class CubeSpawner : MonoBehaviour
     /// 소환할 위치
     /// </summary>
     public Vector3 SpawnPos;
+    public Vector3 SpawnRot;
+    private Quaternion rot;
 
     /// <summary>
     /// 몇 초마다 생성할 것인지?
@@ -29,12 +31,16 @@ public class CubeSpawner : MonoBehaviour
     public ObjectPool objectPool;
     public bool PoolSpawn = true;
     public bool NonPoolSpawn = true;
+
+    private WaitForSeconds waitSeconds;
     
     // Start is called before the first frame update
     void Start()
     {
         objectPool.SetPrefab(CubePrefab);
         StartCoroutine(Timer());
+        waitSeconds = new WaitForSeconds(SpawnTime);
+        rot = Quaternion.Euler(SpawnRot);
     }
 
     // Update is called once per frame
@@ -43,10 +49,10 @@ public class CubeSpawner : MonoBehaviour
         // 키를 누르면 생성 및 제거
         if (Input.GetKey(KeyCode.Space))
         {
-            if (PoolSpawn) objectPool.SpawnObject(SpawnPos, RandomRot());
+            if (PoolSpawn) objectPool.SpawnObject(SpawnPos, rot);
             if (NonPoolSpawn)
             {
-                var go = Instantiate(CubePrefab, SpawnPos, RandomRot());
+                var go = Instantiate(CubePrefab, SpawnPos, rot);
                 cubeList.Add(go);
             }
 
@@ -79,13 +85,13 @@ public class CubeSpawner : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(SpawnTime);
+            yield return waitSeconds;
             if (NonPoolSpawn)
             {
-                var go = Instantiate(CubePrefab, SpawnPos, RandomRot());
+                var go = Instantiate(CubePrefab, SpawnPos, rot);
                 cubeList.Add(go);
             }
-            if (PoolSpawn) objectPool.SpawnObject(SpawnPos, RandomRot());
+            if (PoolSpawn) objectPool.SpawnObject(SpawnPos, rot);
         }
     }
     

@@ -5,20 +5,11 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     public GameObject objectPrefab;
-    private List<GameObject> objectPool = new List<GameObject>(20);   
-    private int currentNumber;
-    private int poolCount { get { return objectPool.Count; }}
+    private List<GameObject> objectPool = new List<GameObject>(100);   
+    private int currentNumber = 0;
+    private int poolCount = 0;
 
     // Start is called before the first frame update
-    void Awake()
-    {
-        foreach (Transform childObject in transform)
-        {
-            objectPool.Add(childObject.gameObject);
-            childObject.gameObject.SetActive(false);
-        }
-        currentNumber = 0;
-    }
 
     public void SetPrefab(GameObject prefab)
     {
@@ -31,9 +22,9 @@ public class ObjectPool : MonoBehaviour
         if (currentNumber == poolCount) 
         {
             spawnedObject = Instantiate(objectPrefab, position, rotation);
-            spawnedObject.transform.SetParent(gameObject.transform);
             objectPool.Add(spawnedObject);
             currentNumber++;
+            poolCount++;
         }
         else 
         {
