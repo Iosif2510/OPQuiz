@@ -63,7 +63,7 @@ public class CubeSpawner : MonoBehaviour
         {
             if (NonPoolSpawn)
             {
-                if (cubeList.Any())
+                if (cubeList.Count == 0)
                 {
                     var item = cubeList.Last();
                     if (item != null)
